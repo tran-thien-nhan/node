@@ -1,0 +1,42 @@
+<h1>THUẬT TOÁN DES</h1>
+<form action="/post-thuat-toan-des" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Mã hóa</span>
+                <input type="text" name="dulieu" class="form-control" placeholder="input data">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-primary" onclick="encryptData()">Mã hóa</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <textarea name="chuoimahoa" class="form-control" id="" cols="30" rows="10"></textarea>
+        </div>
+    </div>
+</form>
+<script>
+    function encryptData() {
+        // Get the input data
+        const inputData = document.querySelector('input[name="dulieu"]').value;
+
+        // Make an AJAX request to the server to get the encrypted data
+        fetch("/post-thuat-toan-des", {
+            method: "POST",
+            body: JSON.stringify({ dulieu: inputData }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((response) => response.text())
+        .then((encryptedData) => {
+            // Set the encrypted data in the textarea
+            document.querySelector('textarea[name="chuoimahoa"]').value = encryptedData;
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+    }
+</script>
