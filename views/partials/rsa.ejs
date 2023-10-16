@@ -90,8 +90,8 @@
                 // Đặt public key và private key vào các textarea
                 document.getElementById("publickey").value = publicKeyWithoutWhitespace;
                 document.getElementById("privatekey").value = privateKeyWithoutWhitespace;
-                // document.getElementById("pk").value = publicKeyWithoutWhitespace;
-                // document.getElementById("prk").value = privateKeyWithoutWhitespace;
+                document.getElementById("pk").value = publicKeyWithoutWhitespace;
+                document.getElementById("prk").value = privateKeyWithoutWhitespace;
             })
             .catch(error => console.error(error));
     }
