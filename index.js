@@ -146,10 +146,6 @@ app.post("/post-generate-pair-key", (req, res) => {
 app.post("/post-thuat-toan-rsa", (req, res) => {
     const inputData = req.body.dulieu;
 
-    if (!publicKey) {
-        return res.status(400).json({ error: "Không tìm thấy khóa công khai." });
-    }
-
     const encryptedData = crypto.publicEncrypt(
         {
             key: publicKey,
@@ -165,10 +161,6 @@ app.post("/post-thuat-toan-rsa", (req, res) => {
 app.post("/post-thuat-toan-rsa-decrypt", (req, res) => {
     const inputData2 = req.body.dulieugiaima;
     const inputData = req.body.dulieu;
-
-    if (!privateKey) {
-        return res.status(400).json({ error: "Không tìm thấy khóa riêng tư." });
-    }
 
     const encryptedData = Buffer.from(inputData2, "base64");
 

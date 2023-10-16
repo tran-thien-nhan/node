@@ -90,8 +90,8 @@
                 // Đặt public key và private key vào các textarea
                 document.getElementById("publickey").value = publicKeyWithoutWhitespace;
                 document.getElementById("privatekey").value = privateKeyWithoutWhitespace;
-                document.getElementById("pk").value = publicKeyWithoutWhitespace;
-                document.getElementById("prk").value = privateKeyWithoutWhitespace;
+                // document.getElementById("pk").value = publicKeyWithoutWhitespace;
+                // document.getElementById("prk").value = privateKeyWithoutWhitespace;
             })
             .catch(error => console.error(error));
     }
@@ -99,7 +99,19 @@
     function encryptData() {
         const inputData = document.getElementById("dulieu").value;
         const publicKey = document.getElementById("pk").value; // Lấy public key từ textarea
+        const publicKeyGenerated = document.getElementById("publickey").value; // Lấy public key đã tạo từ textarea
 
+        if (publicKey.trim() === "") {
+            alert("Vui lòng nhập khóa công khai trước khi mã hóa.");
+            return;
+        }
+
+        if (publicKey !== publicKeyGenerated) {
+            alert("Khóa công khai không khớp với khóa công khai đã tạo.");
+            return;
+        }
+
+        // Tiến hành mã hóa
         fetch("/post-thuat-toan-rsa", {
             method: "POST",
             body: JSON.stringify({ dulieu: inputData }),
@@ -112,13 +124,27 @@
                 document.getElementById("chuoimahoa").value = encryptedData;
                 document.getElementById("dulieugiaima").value = encryptedData;
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                alert("Lỗi khi mã hóa: " + error.message);
+            });
     }
 
     function decryptData() {
         const inputData = document.getElementById("dulieugiaima").value;
         const privateKey = document.getElementById("prk").value; // Lấy private key từ textarea
+        const privateKeyGenerated = document.getElementById("privatekey").value; // Lấy private key đã tạo từ textarea
 
+        if (privateKey.trim() === "") {
+            alert("Vui lòng nhập khóa riêng tư trước khi giải mã.");
+            return;
+        }
+
+        if (privateKey !== privateKeyGenerated) {
+            alert("Khóa riêng tư không khớp với khóa riêng tư đã tạo.");
+            return;
+        }
+
+        // Tiến hành giải mã
         fetch("/post-thuat-toan-rsa-decrypt", {
             method: "POST",
             body: JSON.stringify({ dulieugiaima: inputData }),
@@ -130,6 +156,8 @@
             .then(decryptedData => {
                 document.getElementById("chuoigiaima").value = decryptedData;
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                alert("Lỗi khi giải mã: " + error.message);
+            });
     }
 </script>
