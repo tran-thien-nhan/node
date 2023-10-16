@@ -1,0 +1,135 @@
+<h1>THUẬT TOÁN RSA</h1>
+<div class="container">
+    <div class="container">
+        <form action="/post-generate-pair-key" method="post">
+            <button type="button" class="btn btn-primary" onclick="generateRSAKeyPair()">generate RSA key pair</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>public key</h3>
+                    <textarea name="publickey" id="publickey" cols="30" rows="10" class="form-control"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <h3>private key</h3>
+                    <textarea name="privatekey" id="privatekey" cols="30" rows="10" class="form-control"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="/post-thuat-toan-rsa" method="post">
+                <h2>Mã hóa</h2>
+                <div class="row">
+                    <div class="mb-2">
+                        <div class="input-group mb-3">
+                            <input type="text" name="dulieu" class="form-control" id="dulieu" placeholder="Input data">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-10">
+                        <label for="pk" style="font-weight: bold;">enter public key</label>
+                        <textarea name="pk" id="pk" class="form-control" placeholder="nhập public key"></textarea>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success" onclick="encryptData()">Mã hóa</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <textarea name="chuoimahoa" class="form-control" id="chuoimahoa" rows="10"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form action="/post-thuat-toan-rsa-decrypt" method="post">
+                <h2>Giải mã</h2>
+                <div class="row">
+                    <div class="mb-2">
+                        <div class="input-group mb-3">
+                            <input type="text" name="dulieugiaima" class="form-control" id="dulieugiaima"
+                                placeholder="Input data">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-10">
+                        <label for="prk" style="font-weight: bold;">enter private key</label>
+                        <textarea name="prk" id="prk" class="form-control" placeholder="nhập private key"></textarea>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger" onclick="decryptData()">Giải mã</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <textarea name="chuoigiaima" class="form-control" id="chuoigiaima" rows="10"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateRSAKeyPair() {
+        fetch("/post-generate-pair-key", {
+            method: "POST"
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Loại bỏ khoảng trắng và "BEGIN" và "END" markers từ khóa
+                const publicKeyWithoutWhitespace = data.publicKey
+                    .replace(/-----BEGIN PUBLIC KEY-----/g, '')
+                    .replace(/-----END PUBLIC KEY-----/g, '')
+                    .replace(/\s/g, ''); // Loại bỏ tất cả khoảng trắng
+
+                const privateKeyWithoutWhitespace = data.privateKey
+                    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+                    .replace(/-----END PRIVATE KEY-----/g, '')
+                    .replace(/\s/g, ''); // Loại bỏ tất cả khoảng trắng
+
+                // Đặt public key và private key vào các textarea
+                document.getElementById("publickey").value = publicKeyWithoutWhitespace;
+                document.getElementById("privatekey").value = privateKeyWithoutWhitespace;
+                document.getElementById("pk").value = publicKeyWithoutWhitespace;
+                document.getElementById("prk").value = privateKeyWithoutWhitespace;
+            })
+            .catch(error => console.error(error));
+    }
+
+    function encryptData() {
+        const inputData = document.getElementById("dulieu").value;
+        const publicKey = document.getElementById("pk").value; // Lấy public key từ textarea
+
+        fetch("/post-thuat-toan-rsa", {
+            method: "POST",
+            body: JSON.stringify({ dulieu: inputData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(encryptedData => {
+                document.getElementById("chuoimahoa").value = encryptedData;
+                document.getElementById("dulieugiaima").value = encryptedData;
+            })
+            .catch(error => console.error(error));
+    }
+
+    function decryptData() {
+        const inputData = document.getElementById("dulieugiaima").value;
+        const privateKey = document.getElementById("prk").value; // Lấy private key từ textarea
+
+        fetch("/post-thuat-toan-rsa-decrypt", {
+            method: "POST",
+            body: JSON.stringify({ dulieugiaima: inputData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(decryptedData => {
+                document.getElementById("chuoigiaima").value = decryptedData;
+            })
+            .catch(error => console.error(error));
+    }
+</script>

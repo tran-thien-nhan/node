@@ -1,0 +1,83 @@
+<h1>THUẬT TOÁN AES</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form action="/post-thuat-toan-aes" method="post">
+                <h2>Mã hóa</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="input-group mb-3">
+                            <input type="text" name="dulieu" class="form-control" id="dulieu" placeholder="Input data">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-success" onclick="encryptData()">Mã hóa</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <textarea name="chuoimahoa" class="form-control" id="chuoimahoa" rows="10"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form action="/post-thuat-toan-aes-decrypt" method="post">
+                <h2>Giải mã</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="input-group mb-3">
+                            <input type="text" name="dulieugiaima" class="form-control" id="dulieugiaima"
+                                placeholder="Input data">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-danger mb-2" onclick="decryptData()">Giải mã</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <textarea name="chuoigiaima" class="form-control" id="chuoigiaima" rows="10"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function encryptData() {
+        // Lấy dữ liệu đầu vào từ input
+        var inputData = document.getElementById("dulieu").value;
+
+        // Gửi dữ liệu đầu vào lên server để mã hóa
+        fetch('/post-thuat-toan-aes', {
+            method: 'POST',
+            body: JSON.stringify({ dulieu: inputData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(data => {
+                // Hiển thị chuỗi mã hóa trong textarea
+                document.getElementById("chuoimahoa").value = data;
+                document.getElementById("dulieugiaima").value = data;
+            });
+    }
+
+    function decryptData() {
+        // Lấy chuỗi mã hóa đầu vào từ input
+        var encryptedData = document.getElementById("dulieugiaima").value;
+
+        // Gửi chuỗi mã hóa lên server để giải mã
+        fetch('/post-thuat-toan-aes-decrypt', {
+            method: 'POST',
+            body: JSON.stringify({ dulieugiaima: encryptedData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(data => {
+                // Hiển thị chuỗi giải mã trong textarea
+                document.getElementById("chuoigiaima").value = data;
+            });
+    }
+</script>
