@@ -4,6 +4,7 @@ var port = 5000;
 var expressLayouts = require("express-ejs-layouts"); // Gọi thư viện layout
 var nodemailer = require("nodemailer"); // Gọi thư viện nodemailer
 var crypto = require("crypto"); // Gọi thư viện crypto
+const IP = require("ip");
 
 app.use(express.static("public"));
 app.set("view engine", "ejs"); // Khai bao file co duoi mở rộng ejs
@@ -37,6 +38,15 @@ app.get("/rsa", function (req, res) {
 
 app.get("/email", function (req, res) {
     res.render("partials/email");
+});
+
+app.get('/ip', function (req, res) {
+    res.render("partials/ip");
+});
+
+app.post('/post-check-ip', function (req, res) {
+    const ipAdress = IP.address();
+    res.send(ipAdress);
 });
 
 app.post("/post-email", function (req, res) {
@@ -175,3 +185,5 @@ app.post("/post-thuat-toan-rsa-decrypt", (req, res) => {
 
     res.send(decryptedData.toString());
 });
+
+app.listen(port);

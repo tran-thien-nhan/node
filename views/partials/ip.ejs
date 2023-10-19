@@ -1,0 +1,17 @@
+<form action="/post-check-ip" method="post">
+    <button type="button" onclick="checkIp()">check ip</button>
+    <p id="checkIp"></p>
+</form>
+
+<script>
+    function checkIp() {
+        fetch("/post-check-ip", {
+            method: "POST"
+        })
+            .then(response => response.text()) // Sử dụng .text() thay vì .json() vì server trả về một chuỗi IP
+            .then(ip => {
+                document.getElementById("checkIp").textContent = ip; // Sử dụng .textContent để đặt nội dung thay vì .value
+            })
+            .catch(error => console.error(error));
+    }
+</script>
